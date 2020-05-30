@@ -1,0 +1,1 @@
+These files are what were used to present Zabbix Enterprise Monitoring of VMware hosts to FWVMUG June 2020.
