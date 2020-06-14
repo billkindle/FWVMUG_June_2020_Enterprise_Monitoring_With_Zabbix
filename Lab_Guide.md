@@ -8,9 +8,9 @@ If you wish to follow along during the presentation, please take a look at these
 - An SSH Terminal application such as [PuTTY](https://putty.org/) or [MobaXTerm](https://mobaxterm.mobatek.net/), or [PowerShell 7.x](https://github.com/PowerShell/PowerShell#get-powershell) which now supports SSH natively.
 - A modern web browser (Edge,Firefox,Chrome)
 - An ESXi 5.5 - 7.0 host and credentials
-- [Ubuntu Server 20.04 Focal Fossa OVF](https://www.osboxes.org/ubuntu/)
-  - VMware Workstation 15.5, VirtualBox 6.1 or ESXi / vSphere.
-  - If you choose this route, be aware you may have to do additional network configuration and firewall editing. This demo is being hosted on my local laptop using Hyper-V and connected to my home network.
+- [Ubuntu Server 20.04 Focal Fossa OVF/VDI](https://www.osboxes.org/ubuntu-server/)
+  - VMware Workstation 15.5, VMware Player, ESXi / vSphere, or VirtualBox 6.1.
+  - If you choose this route, be aware you may have to do additional network configuration and firewall editing.
 
 -OR-
 
