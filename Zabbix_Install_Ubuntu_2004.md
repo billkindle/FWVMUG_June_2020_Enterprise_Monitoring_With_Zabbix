@@ -21,10 +21,12 @@ Once complete, you need to begin installing the three core Zabbix components:
 
 With these components installed, you now have to configure the database in order to import the schema for Zabbix. Here you may run into a problem.
 
-You will want to make sure you enter the correct **root** account password to connect to mysql server. Once you connect to mysql server, you then create the initial database and assign a mysql username / password to connect to the database. Run the commands below:
+You will want to make sure you enter the correct **root** account password to connect to mysql server. Once you connect to mysql server, you then create the initial database and assign a mysql username / password to connect to the database. 
+
+Since this demo has an account that is already root, we can just run the commands below:
 
 ```Bash
-# mysql -uroot -p
+# sudo mysql
 
 mysql> create database zabbix character set utf8 collate utf8_bin;
 mysql> create user zabbix@localhost identified by 'password';
@@ -40,7 +42,7 @@ At this point, you have an empty database. There are no tables or structure. The
 # zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -p password
 ```
 
-This will take a minute or two to execute. When you are returned to the command prompt, you can continue.
+This will take a minute or two to execute. When you are returned to the command prompt, you can continue. The username and password shown above is for the schema being imported, it is not the same account you will be using going forward. 
 
 ## Configuring Zabbix Server
 
@@ -52,4 +54,68 @@ Using the built in text editor that comes with Ubuntu Server, *nano*, we will ma
 
 Using the keyboard shortcut 'CTRL+W' to search, type in '**DBPassword**' and pressing **Enter** should put your cursor directly at the configuration variable you need to edit.
 
-Type in the password used by the MySQL account created previously.
+Type in the password used by the MySQL account created previously, **password**
+
+Next, you will need to set the timezone. To do this, edit */etc/zabbix/apache.conf* using nano:
+
+```Bash
+# sudo nano /etc/zabbix/apache.conf
+```
+
+There are two fields to edit for PHP. Be sure to edit both from the defaults to **America/New_York**. Use **CTRL+W** to search for this line: 
+
+```text
+# php_value date.timezone Europe/Riga
+```
+
+Be sure to uncomment both lines. Your edit should look like this:
+
+```text
+php_value date.timezone America/New_York
+```
+
+## Starting Zabbix Server
+
+If all of your edits are correct, lets go ahead and restart the Zabbix services and enable them so they will auto start on reboot:
+
+```Bash
+# systemctl restart zabbix-server zabbix-agent apache2
+# systemctl enable zabbix-server zabbix-agent apache2
+```
+
+You should now be able to browse to to the Zabbix Web frontend and finish the initial configuration. 
+
+From your web browser, navigate to `http://[IP_Address]/zabbix/` and follow the on screen instructions. At this point you will see if the edits are correct or the setup wizard will not proceed. When asked for the database password, you will use the user and password created earlier which was **zabbix** / **password**. Keep clicking next and use the defaults for now.
+
+The default login is **Administrator** / **zabbix**.
+*Usernames case sensitive!*
+
+## Enable VMware Monitoring Capabilities
+
+While Zabbix supports VMware monitoring out of the box, that doesn't mean it's enabled. You have to make a couple of more edits to the server configuration.
+
+```Bash
+sudo nano /etc/zabbix/zabbix_server.conf
+```
+
+Using **CTRL+W**, search for and edit the following line:
+
+```text
+# StartVMwareCollectors=0
+```
+
+to this:
+
+```text
+# StartVMwareCollectors=5
+```
+
+Using **CTRL+X** and choosing **Y** to save the file, you need to restart the Zabbix Server Daemon to apply the configuration changes:
+
+```Bash
+# sudo systemctl restart zabbix-server
+```
+
+**Note** 
+
+There are some additional settings that can be adjusted, but by default, it will take up to an hour for metrics to be collected. For the demo, you will see I changed that to 10 minutes. Defaults are fine for most applications.
