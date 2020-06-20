@@ -1,6 +1,13 @@
 # Zabbix 5.0 Installation for Ubuntu 20.04
 
 ## Installing Zabbix Server
+
+### Quick Note About Code Examples
+
+You will see `# ` used to signify a command line in Bash throughout this document. Do not confuse it with comments you will see in the configuration files `#comment`. Be sure to uncomment configurations and save the documents or you may have trouble following the guide.
+
+### Begin Installation
+
 First and foremost, you need to add the Zabbix repository to your Ubuntu VM guest:
 
 ``` Bash
@@ -36,10 +43,10 @@ mysql> quit;
 
 [*There's a really good tutorial on this process from a MySQL perspective here.*](https://linuxize.com/post/how-to-create-mysql-user-accounts-and-grant-privileges/) That should explain things a little better. Be sure to make note of what you used for the mysql user password above. For this demo, let's leave it at '**password**'.
 
-At this point, you have an empty database. There are no tables or structure. The next step is the import the schema using a script provided by Zabbix:
+At this point, you have an empty database. There are no tables or structure. The next step is the import the schema using a script provided by Zabbix:. This is an important distinction to know about. The `-uzabbix -p zabbix` is not the information` for your zabbix installation, but that of the database from which you are copying the schema from that is provided by Zabbix. 
 
 ```Bash
-# zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -p password
+# zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -p zabbix
 ```
 
 This will take a minute or two to execute. When you are returned to the command prompt, you can continue. The username and password shown above is for the schema being imported, it is not the same account you will be using going forward. 
